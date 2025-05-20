@@ -1,0 +1,21 @@
+.container {
+  max-width: 600px;
+  margin: auto;
+  
+}
+
+
+
+form > * {
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+form input {
+  padding: 10px;
+}
+
+form textarea {
+  padding: 30px;
+}
