@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react"
+import { useState, useMemo, useRef, useEffect } from "react"
 
 
 export default function App() {
@@ -13,11 +13,7 @@ export default function App() {
    const specializationRef = useRef()
    const experienceYearsRef = useRef()
   
-
-
-
-  
-
+   //Variabili con caratteri da controllare
   const letters = "abcdefghijklmnopqrstuvwxyz";
   const numbers = "0123456789";
   const symbols = "!@#$%^&*()-_=+[]{}|;:'\\,.<>?/`~";
@@ -58,9 +54,13 @@ export default function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    //Prendere i valori dei campi non controllati
     const firstName = firstnameRef.current.value;
     const specialization = specializationRef.current.value;
     const experienceYears = experienceYearsRef.current.value
+
+    //Validazione campi compilati
     if(
       !firstName.trim() ||
       !userName.trim() ||
@@ -85,6 +85,26 @@ export default function App() {
     )
 
   }
+   
+  //Focus sul primo campo all ' avvio
+   useEffect(() => {
+     firstnameRef.current.focus()
+    }, [])
+
+    //Funzione per il reset
+
+    const handleReset = (e) => {
+      e.preventDefault()
+      setDescription(""),
+      setPassword(""),
+      setUserName(""),
+      firstnameRef.current.value = "",
+      specializationRef.current.value ="",
+      experienceYearsRef.current.value = ""
+      firstnameRef.current.focus()
+      return alert("OK! Campi svuotati")
+
+    }
   
 
 
@@ -190,7 +210,8 @@ export default function App() {
            }
             
         </div>
-        <button  type="submit"> invia</button>
+        <button  type="submit"> Invia</button>
+        <button onClick={handleReset}>Reset</button>
       </form>
     </div>
   )
