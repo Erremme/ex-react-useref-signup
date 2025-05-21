@@ -1,16 +1,17 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef } from "react"
 
 
 export default function App() {
-  const [firstName,setFirstName] = useState("Raffalele")
+  
+  //Input controllati
   const [userName,setUserName] = useState("Erremme")
   const [password,setPassword] = useState("Ciromarina96.")
-  const [specialization,setSpecialization] = useState("Frontend")
-  const [experienceYears,setExperienceYears] = useState("1")
   const [description,setDescription] = useState("Ciao sono raffaele e frequento il corso hshshshshhshshshshshshshshhshhhshshshshshshshshshshshshshshshshs")
-
-
-
+ 
+  //input non controllati
+   const firstnameRef = useRef()
+   const specializationRef = useRef()
+   const experienceYearsRef = useRef()
   
 
 
@@ -21,7 +22,7 @@ export default function App() {
   const numbers = "0123456789";
   const symbols = "!@#$%^&*()-_=+[]{}|;:'\\,.<>?/`~";
 
-  
+  //Controllo userName con useMemo
    const isUserNameValid = useMemo(() => {
     const charValid = userName.split("").every((char) => 
       letters.includes(char.toLowerCase())||
@@ -32,6 +33,7 @@ export default function App() {
 
     },[userName])
 
+     //Controllo password con useMemo
     const isPasswordValid = useMemo(() => {
       return(
        password.trim().length >= 8 &&
@@ -41,19 +43,24 @@ export default function App() {
   
       )
 
-      
     }, [password])
 
+     //Controllo description con useMemo
    const  isDescriptionValid = useMemo(() => {
-    const fiedValid = description.trim().length >= 100 && 
-     description.trim().length <= 1000;
-     return fiedValid;
+    return(
+    description.trim().length >= 100 && 
+     description.trim().length <= 1000
+    )
+     
    },[description])
 
   
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    const firstName = firstnameRef.current.value;
+    const specialization = specializationRef.current.value;
+    const experienceYears = experienceYearsRef.current.value
     if(
       !firstName.trim() ||
       !userName.trim() ||
@@ -94,8 +101,8 @@ export default function App() {
           name ="firstName" 
           type="text"
            placeholder="Inserisci il Nome "
-           value={firstName}
-           onChange={(e) => setFirstName(e.target.value)}
+            ref={firstnameRef}
+           
            />
           
           
@@ -140,8 +147,8 @@ export default function App() {
         </div>
          
          <select name="specialization"
-          value={specialization} 
-          onChange={(e) => setSpecialization(e.target.value)}
+          ref={specializationRef}
+          
           >
             <option value="">Scegli la specializzazione</option>
             <option value="Full Stack">Full Stack</option>
@@ -159,8 +166,8 @@ export default function App() {
            min={1}
             name="experienceYears"
             placeholder="Inscerisci quanti anni di esperienza hai"
-            value={experienceYears}
-            onChange={(e) => setExperienceYears(e.target.value)}
+            ref={experienceYearsRef}
+            
            
              />
 
