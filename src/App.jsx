@@ -5,22 +5,26 @@ const initialFormValue = {
   lastName : "",
   password : "",
  specialization: "",
- experienceYears : 0,
+ experienceYears : 1,
  description : ""
 }
 
 const initialErrors = {
-  firstName: false,
-  lastName: false,
-  password: false,
-  specialization: false,
-  experienceYears: false,
-  description: false
+  firstName: "",
+  lastName: "",
+  password: "",
+  specialization: "",
+  experienceYears: "",
+  description: ""
 }
 
 export default function App() {
   const [form ,setForm] = useState(initialFormValue)
   const [errors , setErrors] = useState(initialErrors)
+
+  const letters = "abcdefghijklmnopqrstuvwxyz";
+  const numbers = "0123456789";
+  const symbols = "!@#$%^&*()-_=+[]{}|;:'\\,.<>?/`~";
 
   
 
@@ -37,17 +41,60 @@ export default function App() {
    )
 
    setErrors((current) => {
+    let errorMsg = ""
+    if(value.trim() === ""){
+
+      errorMsg = "Compila il campo!"
+
+   } else if(fieldName === "experienceYears" && value  <= 0){
+       
+      errorMsg = "Il campo puo contenere solo numeri positivi"
+
+    }else if (
+        fieldName === "firstName" &&
+        (numbers.split('').some(char => value.includes(char)) ||
+         symbols.split('').some(char => value.includes(char)) ||
+         value.trim().length < 6)
+
+      ) {
+        errorMsg = "Il nome non può contenere numeri o simboli e deve essere di almeno 6 caratteri";
+
+      }else if (
+        fieldName === "lastName" &&
+        (numbers.split('').some(char => value.includes(char)) ||
+         symbols.split('').some(char => value.includes(char)) ||
+         value.trim().length < 6)
+
+      ) {
+        errorMsg = "Il nome non può contenere numeri o simboli e deve essere di almeno 6 caratteri";
+
+      }else if (
+        fieldName === "password" &&
+        (!numbers.split('').some(char => value.includes(char)) ||
+         !symbols.split('').some(char => value.includes(char)) ||
+         value.trim().length < 8)
+
+      )  {
+        errorMsg = "Deve contenere almeno 8 caratteri, 1 lettera, 1 numero e 1 simbolo.";
+      }else if (
+        fieldName === "description" &&
+        ( 
+         value.trim().length < 100 || value.trim().length > 1000 )
+
+      )  {
+        errorMsg = "Descrizione: Deve contenere tra 100 e 1000 caratteri (senza spazi iniziali e finali)";
+      }
     return{
       ...current,
-      [fieldName] : value.trim() === "" || fieldName === "experienceYears" && value <= 0
+      [fieldName] : errorMsg
     }
    })
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if(Object.values(errors).some((error) => error !== false )){
-       return;
+    if(Object.values(errors).some((error) => error !== "" )){
+       return console.log("compila i campi")
     }else{
       console.log(form)
     }
@@ -75,7 +122,11 @@ export default function App() {
            
            />
            {errors.firstName && 
-            <p className="errors">Compila il campo</p>
+            <p className="errors">{errors.firstName}</p>
+           }
+
+           {!errors.firstName &&  form.firstName.trim() !== "" &&
+            <p className="success" >Campo valido!</p>
            }
           
         </div>
@@ -91,7 +142,11 @@ export default function App() {
           />
 
           {errors.lastName && 
-            <p className="errors">Compila il campo</p>
+            <p className="errors">{errors.lastName}</p>
+           }
+
+           {!errors.lastName &&  form.lastName.trim() !== "" &&
+            <p className="success" >Campo valido!</p>
            }
         </div>
 
@@ -106,11 +161,15 @@ export default function App() {
            />
 
            {errors.password && 
-            <p className="errors">Compila il campo</p>
+            <p className="errors">{errors.password}</p>
+           }
+
+           {!errors.password &&  form.password.trim() !== "" &&
+            <p className="success" >Campo valido!</p>
            }
         </div>
          
-         <select name="specialization" onChange={handleChange} >
+         <select name="specialization" onChange={handleChange} value={form.specialization} >
             <option value="">Scegli la specializzazione</option>
             <option value="Full Stack">Full Stack</option>
             <option value="Frontend">Frontend</option>
@@ -118,7 +177,11 @@ export default function App() {
          </select>
 
          {errors.specialization && 
-            <p className="errors">Compila il campo</p>
+            <p className="errors">{errors.specialization}</p>
+           }
+
+           {!errors.specialization &&  form.specialization.trim() !== "" &&
+            <p className="success" >Campo valido!</p>
            }
 
 
@@ -135,7 +198,11 @@ export default function App() {
              />
 
              {errors.experienceYears && 
-            <p className="errors">Il numero deve essere maggiore di "0"</p>
+            <p className="errors">{errors.experienceYears}</p>
+             }
+
+             {!errors.experienceYears && form.experienceYears !== "" && 
+            <p className="success" >Campo valido!</p>
            }
         </div>
         <div>
@@ -150,7 +217,11 @@ export default function App() {
              </textarea>
 
              {errors.description && 
-            <p className="errors">Compila il campo</p>
+            <p className="errors">{errors.description}</p>
+            }
+
+            {!errors.description &&  
+            <p className="success" >Campo valido!</p>
            }
         </div>
         <button  type="submit"> invia</button>
